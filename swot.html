@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SWOT Analysis KPI Kanwil 905</title>
+    <meta
+      name="description"
+      content="Analisis SWOT KPI Kanwil Jateng dan DIY berdasarkan data Google Sheets terbaru."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="dashboard swot-page" aria-live="polite">
+      <header class="hero">
+        <div class="brand-lockup">
+          <img
+            src="bpjs-ketenagakerjaan-logo.svg"
+            alt="BPJS Ketenagakerjaan"
+            class="brand-logo"
+          />
+          <div>
+            <p class="eyebrow">Dashboard Eksekutif KPI</p>
+            <h1>SWOT Analysis</h1>
+            <p class="subhead" id="dataStamp">Mengambil data terbaru dari spreadsheet...</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <a class="nav-btn" href="index.html">Dashboard KPI</a>
+          <button type="button" class="export-btn" id="exportSwotJpgBtn">Export JPG HD</button>
+          <button type="button" class="print-btn" id="printSwotBtn">Print PDF</button>
+          <div class="status-pill" id="refreshStatus">Live data</div>
+        </div>
+      </header>
+
+      <section class="loading" id="loadingState">
+        <div class="loader" aria-hidden="true"></div>
+        <span>Membaca data KPI terbaru...</span>
+      </section>
+
+      <section class="error hidden" id="errorState" role="alert">
+        <strong>Data belum bisa dimuat.</strong>
+        <span id="errorMessage">Cek koneksi atau status publish spreadsheet.</span>
+      </section>
+
+      <section class="content hidden" id="swotContent">
+        <section class="control-panel" aria-label="Pilih unit analisis SWOT">
+          <label for="unitSelect">
+            <span class="eyebrow">Unit Analisis</span>
+            <select id="unitSelect"></select>
+          </label>
+          <div class="control-note" id="classNote">Default Kanwil Jateng dan DIY; SWOT dibaca terhadap pembanding nasional sesuai kelas.</div>
+        </section>
+
+        <section class="panel narrative-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Rangkuman SWOT</p>
+              <h2 id="swotTitle">Kanwil Jateng dan DIY</h2>
+            </div>
+            <span class="tag" id="rankTag">-</span>
+          </div>
+          <div class="swot-summary" id="swotSummary"></div>
+        </section>
+
+        <section class="swot-grid" aria-label="Matriks SWOT KPI">
+          <article class="swot-card strength">
+            <span class="swot-label">
+              <span class="swot-static-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
+              </span>
+              Strengths
+            </span>
+            <h2>Kekuatan</h2>
+            <p>Parameter yang menjadi bantalan posisi terhadap rank bawah.</p>
+            <ul id="strengthList"></ul>
+          </article>
+
+          <article class="swot-card weakness">
+            <span class="swot-label">
+              <span class="swot-static-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 4.3 2.8 17.4A2 2 0 0 0 4.5 20h15a2 2 0 0 0 1.7-2.6L13.7 4.3a2 2 0 0 0-3.4 0Z"/></svg>
+              </span>
+              Weaknesses
+            </span>
+            <h2>Kelemahan</h2>
+            <p>Parameter yang masih tertinggal dari rank atas.</p>
+            <ul id="weaknessList"></ul>
+          </article>
+
+          <article class="swot-card opportunity">
+            <span class="swot-label">
+              <span class="swot-static-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/></svg>
+              </span>
+              Opportunities
+            </span>
+            <h2>Peluang</h2>
+            <p>Gap yang relatif paling realistis untuk ditutup lebih cepat.</p>
+            <ul id="opportunityList"></ul>
+          </article>
+
+          <article class="swot-card threat">
+            <span class="swot-label">
+              <span class="swot-static-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M7 7h10"/><path d="M7 17h10"/><path d="M9 4 6 7l3 3"/><path d="m15 14 3 3-3 3"/></svg>
+              </span>
+              Threats
+            </span>
+            <h2>Ancaman</h2>
+            <p>Parameter yang berpotensi membuat posisi tersusul.</p>
+            <ul id="threatList"></ul>
+          </article>
+        </section>
+
+        <section class="panel strategy-panel" aria-label="Matriks strategi TOWS">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Matriks Strategi</p>
+              <h2>TOWS Analysis</h2>
+            </div>
+            <span class="tag">SO / WO / ST / WT</span>
+          </div>
+          <div class="strategy-matrix" id="strategyMatrix"></div>
+        </section>
+
+        <section class="verdict" id="swotVerdict"></section>
+      </section>
+
+      <footer>
+        <span>Sumber: Google Sheets publik</span>
+        <a
+          href="https://docs.google.com/spreadsheets/d/e/2PACX-1vSvtCO0B41vi76Vj0nHO3edY3Bqa39PG_5xRQJuvgxG6WeSC4JY62cAtG67HtyoTSyQ-W7CFDxWcrXq/pubhtml"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Buka sumber data
+        </a>
+      </footer>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="swot.js?v=20260805-main-params"></script>
+  </body>
+</html>

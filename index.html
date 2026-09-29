@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard Eksekutif KPI Cabang Jajaran 905</title>
+    <meta
+      name="description"
+      content="Dashboard eksekutif KPI cabang jajaran 905 dengan pembanding ranking nasional sesuai kelas."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="dashboard" aria-live="polite">
+      <header class="hero">
+        <div class="brand-lockup">
+          <img
+            src="bpjs-ketenagakerjaan-logo.svg"
+            alt="BPJS Ketenagakerjaan"
+            class="brand-logo"
+          />
+          <div>
+            <p class="eyebrow">Dashboard Eksekutif KPI</p>
+            <h1>Kanwil Jateng dan DIY</h1>
+            <p class="subhead" id="dataStamp">Mengambil data terbaru dari spreadsheet...</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <a class="nav-btn" href="swot.html">SWOT Analysis</a>
+          <button type="button" class="export-btn" id="exportJpgBtn">Export JPG</button>
+          <button type="button" class="print-btn" id="printBtn">Print PDF</button>
+          <div class="status-pill" id="refreshStatus">Live data</div>
+        </div>
+      </header>
+
+      <section class="loading" id="loadingState">
+        <div class="loader" aria-hidden="true"></div>
+        <span>Membaca data KPI terbaru...</span>
+      </section>
+
+      <section class="error hidden" id="errorState" role="alert">
+        <strong>Data belum bisa dimuat.</strong>
+        <span id="errorMessage">Cek koneksi atau status publish spreadsheet.</span>
+      </section>
+
+      <section class="content hidden" id="dashboardContent">
+        <section class="control-panel" aria-label="Pilih unit analisis">
+          <label for="unitSelect">
+            <span class="eyebrow">Unit Analisis</span>
+            <select id="unitSelect"></select>
+          </label>
+          <div class="control-note" id="classNote">Default Kanwil Jateng dan DIY; cabang jajaran 905 tersedia di pilihan berikutnya.</div>
+        </section>
+
+        <section class="panel narrative-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Rangkuman Eksekutif</p>
+              <h2>Narasi Head-To-Head</h2>
+            </div>
+          </div>
+          <div id="executiveNarrative" class="narrative-list"></div>
+        </section>
+
+        <section class="scoreboard" aria-label="Posisi ranking cabang nasional sesuai kelas">
+          <article class="rank-card danger" id="aboveCard"></article>
+          <article class="rank-card current" id="meCard"></article>
+          <article class="rank-card" id="belowCard"></article>
+          <article class="signal critical-card" aria-label="Titik krusial">
+            <span class="signal-label" id="criticalLabel">Pain Point</span>
+            <strong id="criticalPoint">-</strong>
+            <p id="criticalText">-</p>
+            <div class="critical-table-wrap">
+              <table class="critical-table">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Parameter</th>
+                    <th>Target</th>
+                    <th>Realisasi</th>
+                    <th>%Capaian</th>
+                  </tr>
+                </thead>
+                <tbody id="criticalTable"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <section class="panel main-parameter-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Parameter Utama</p>
+              <h2>Monitoring Growth Harian</h2>
+            </div>
+            <span class="tag" id="valuedParameterCount">Total Parameter update -</span>
+          </div>
+          <div class="parameter-subpanel primary-parameter-subpanel">
+            <div class="parameter-subpanel-head">
+              <h3>Parameter Naik / Stabil</h3>
+              <span class="mini-tag" id="positiveGrowthCount">- parameter aktif</span>
+            </div>
+            <div class="table-wrap main-parameter-table-wrap">
+              <table class="main-parameter-table">
+                <thead>
+                  <tr>
+                    <th>Parameter</th>
+                    <th>Growth Harian</th>
+                    <th>Realisasi</th>
+                    <th>Rank</th>
+                    <th>Score</th>
+                    <th>Bobot</th>
+                  </tr>
+                </thead>
+                <tbody id="mainParameterTable"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="parameter-subpanel negative-growth-block">
+            <div class="parameter-subpanel-head negative-growth-head">
+              <div>
+                <h3>Parameter Turun</h3>
+              </div>
+              <span class="mini-tag danger" id="negativeGrowthCount">-</span>
+            </div>
+            <div class="table-wrap negative-growth-table-wrap">
+              <table class="negative-growth-table">
+                <thead>
+                  <tr>
+                    <th>Parameter</th>
+                    <th>Growth Harian</th>
+                    <th>Realisasi</th>
+                    <th>Rank</th>
+                    <th>Score</th>
+                    <th>Bobot</th>
+                  </tr>
+                </thead>
+                <tbody id="negativeGrowthTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="grid-2">
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Head-To-Head</p>
+                <h2 id="aboveTitle">Tekanan Ke Rank Atas</h2>
+              </div>
+              <span class="tag" id="aboveTag">-</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Indikator</th>
+                    <th id="aboveMeScoreHead">Score Unit</th>
+                    <th id="aboveScoreHead">Score Lawan</th>
+                    <th>Gap</th>
+                  </tr>
+                </thead>
+                <tbody id="aboveTable"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Risiko Ketersusulan</p>
+                <h2 id="belowTitle">Ancaman Dari Rank Bawah</h2>
+              </div>
+              <span class="tag" id="belowTag">-</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Indikator</th>
+                    <th id="belowMeScoreHead">Score Unit</th>
+                    <th id="belowScoreHead">Score Lawan</th>
+                    <th>Gap</th>
+                  </tr>
+                </thead>
+                <tbody id="belowRiskTable"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <section class="grid-2 bottom">
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Penyangga Posisi</p>
+                <h2 id="bufferTitle">Keunggulan Terhadap Rank Bawah</h2>
+              </div>
+              <span class="tag">Bantalan score</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Indikator</th>
+                    <th id="bufferMeScoreHead">Score Unit</th>
+                    <th id="bufferScoreHead">Score Lawan</th>
+                    <th>Gap</th>
+                  </tr>
+                </thead>
+                <tbody id="bufferTable"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="panel action-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Arahan Eksekusi</p>
+                <h2>Prioritas Hari Ini</h2>
+              </div>
+            </div>
+            <div class="actions" id="actions"></div>
+          </article>
+        </section>
+
+        <section class="verdict" id="verdict"></section>
+      </section>
+
+      <footer>
+        <span id="sourceInfo">Sumber: Google Sheets publik</span>
+        <a
+          href="https://docs.google.com/spreadsheets/d/e/2PACX-1vSvtCO0B41vi76Vj0nHO3edY3Bqa39PG_5xRQJuvgxG6WeSC4JY62cAtG67HtyoTSyQ-W7CFDxWcrXq/pubhtml"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Buka sumber data
+        </a>
+      </footer>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="app.js?v=20260904-percent-growth"></script>
+  </body>
+</html>
