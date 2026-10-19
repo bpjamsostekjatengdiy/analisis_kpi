@@ -8,7 +8,7 @@
       name="description"
       content="Dashboard eksekutif KPI cabang jajaran 905 dengan pembanding ranking nasional sesuai kelas."
     />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=20261019-insight-table" />
   </head>
   <body>
     <main class="dashboard" aria-live="polite">
@@ -60,6 +60,27 @@
             </div>
           </div>
           <div id="executiveNarrative" class="narrative-list"></div>
+          <section class="rank-insight" aria-labelledby="rankInsightTitle">
+            <div class="rank-insight-head">
+              <h3 id="rankInsightTitle">Insight</h3>
+              <span class="mini-tag" id="insightRankChange">-</span>
+            </div>
+            <p id="rankInsightSummary"></p>
+            <div class="table-wrap">
+              <table class="rank-insight-table">
+                <thead>
+                  <tr>
+                    <th>Parameter</th>
+                    <th id="insightOwnGrowthHead">Growth Score Unit</th>
+                    <th id="insightOtherGrowthHead">Growth Score Pembanding</th>
+                    <th>Selisih Growth</th>
+                  </tr>
+                </thead>
+                <tbody id="rankInsightTable"></tbody>
+              </table>
+            </div>
+            <p class="rank-insight-note" id="rankInsightNote"></p>
+          </section>
         </section>
 
         <section class="scoreboard" aria-label="Posisi ranking cabang nasional sesuai kelas">
@@ -243,6 +264,6 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    <script src="app.js?v=20260904-percent-growth"></script>
+    <script src="app.js?v=20261019-rank-insight"></script>
   </body>
 </html>

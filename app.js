@@ -422,6 +422,8 @@ function uniqueUnits(rows) {
       scoreGrowth: scoreGrowth(row),
       rankScoreGrowth: toNumber(row.rank_score_growth),
       rank: toNumber(row.rank),
+      previousRank: toNumber(row["rank_h-1"]),
+      previousScore: toNumber(row["score_total_h-1"]),
       regionCode: row.kode_wilayah,
     });
   });
@@ -448,6 +450,8 @@ function uniqueKanwils(rows) {
       scoreGrowth: scoreGrowth(row),
       rankScoreGrowth: toNumber(row.rank_score_growth),
       rank: toNumber(row.rank),
+      previousRank: toNumber(row["rank_h-1"]),
+      previousScore: toNumber(row["score_total_h-1"]),
       regionCode: row.kode_wilayah,
       type: "kanwil",
     });
@@ -479,6 +483,122 @@ function compareByIndicator(rows, selectedCode, otherCode) {
       };
     })
     .filter(Boolean);
+}
+
+function parameterScoreGrowth(row) {
+  const reported = toNumber(row.score_growth);
+  if (reported !== null) return reported;
+  const current = toNumber(row.score);
+  const previous = toNumber(row["score_h-1"]);
+  return current !== null && previous !== null ? current - previous : null;
+}
+
+function rankInsightData(rows, selected, peers, above, below) {
+  const hasPreviousRank = (unit) => unit.previousRank !== null && unit.previousRank > 0;
+  const rankChange = hasPreviousRank(selected) ? selected.previousRank - selected.rank : null;
+  const currentIndex = peers.findIndex((unit) => unit.code === selected.code);
+  const previousOrder = peers.filter(hasPreviousRank).sort(
+    (a, b) => a.previousRank - b.previousRank ||
+      (b.previousScore ?? -Infinity) - (a.previousScore ?? -Infinity),
+  );
+  const previousIndex = previousOrder.findIndex((unit) => unit.code === selected.code);
+  // Prefer a peer whose relative position actually crossed between H-1 and today.
+  const crossed = previousIndex < 0 ? [] : peers.filter((unit, index) => {
+    if (unit.code === selected.code || !hasPreviousRank(unit)) return false;
+    const oldIndex = previousOrder.findIndex((peer) => peer.code === unit.code);
+    return rankChange > 0
+      ? oldIndex < previousIndex && index > currentIndex
+      : rankChange < 0 && oldIndex > previousIndex && index < currentIndex;
+  });
+  const comparator = rankChange < 0 ? crossed.at(-1) ?? above ?? below
+    : crossed[0] ?? (rankChange > 0 ? below ?? above : above ?? below);
+  if (!comparator) return { selected, rankChange, comparator: null, top: [], notes: [] };
+
+  const selectedCode = unitCode(selected);
+  const otherCode = unitCode(comparator);
+  const ownRows = rows.filter((row) => row.kode_kantor === selectedCode);
+  const otherRows = new Map(rows.filter((row) => row.kode_kantor === otherCode)
+    .filter((row) => detailCode(row)).map((row) => [detailCode(row), row]));
+  const differences = ownRows.map((row) => {
+    const other = otherRows.get(detailCode(row));
+    if (!other) return null;
+    const ownGrowth = parameterScoreGrowth(row);
+    const otherGrowth = parameterScoreGrowth(other);
+    if (ownGrowth === null || otherGrowth === null) return null;
+    return { name: row.nama, ownGrowth, otherGrowth, difference: ownGrowth - otherGrowth };
+  }).filter(Boolean);
+  const changing = differences.filter((item) => Math.abs(item.difference) > 1e-8);
+  const favorable = rankChange > 0 ? changing.filter((item) => item.difference > 0)
+    : rankChange < 0 ? changing.filter((item) => item.difference < 0) : changing;
+  const top = favorable.sort((a, b) => rankChange > 0 ? b.difference - a.difference
+    : rankChange < 0 ? a.difference - b.difference
+      : Math.abs(b.difference) - Math.abs(a.difference)).slice(0, 3);
+  const notes = [];
+  if (selected.rank === comparator.rank) {
+    notes.push(`Keduanya tercatat rank ${formatNumber(selected.rank, 0)} di sumber; posisi relatif dibedakan oleh score.`);
+  }
+  for (const unit of [selected, comparator]) {
+    if (unit.score !== null && unit.previousScore !== null && unit.scoreGrowth !== null &&
+        Math.abs(unit.score - unit.previousScore - unit.scoreGrowth) > 0.015) {
+      notes.push(`Growth total ${unitCode(unit)} di sumber (${formatSigned(unit.scoreGrowth)}) berbeda dari selisih score H-1 (${formatSigned(unit.score - unit.previousScore)}); narasi gap memakai selisih score H-1.`);
+    }
+  }
+  if (differences.length < ownRows.length) {
+    notes.push(`${differences.length} dari ${ownRows.length} parameter memiliki pasangan growth score yang bisa dibandingkan; data kosong tidak dianggap 0.`);
+  }
+  if (rankChange !== null && rankChange !== 0 && !crossed.length) {
+    notes.push("Pembanding memakai pesaing terdekat; data belum menunjukkan pertukaran posisi langsung dengan kantor ini.");
+  }
+  return {
+    selected, rankChange, comparator, top, notes,
+    currentGap: selected.score !== null && comparator.score !== null ? selected.score - comparator.score : null,
+    previousGap: selected.previousScore !== null && comparator.previousScore !== null
+      ? selected.previousScore - comparator.previousScore : null,
+  };
+}
+
+function renderRankInsight(data) {
+  const { selected, rankChange, comparator, top, notes } = data;
+  $("insightRankChange").textContent = rankChange === null ? "H-1 belum tersedia"
+    : `Rank ${formatNumber(selected.previousRank, 0)} ke ${formatNumber(selected.rank, 0)}`;
+  const movement = rankChange === null ? `Rank hari ini ${formatNumber(selected.rank, 0)}; perubahan rank belum dapat dipastikan karena rank H-1 kosong.`
+    : rankChange === 0 ? `Rank tetap ${formatNumber(selected.rank, 0)} dibanding H-1.`
+      : `Rank ${rankChange > 0 ? "naik" : "turun"} dari ${formatNumber(selected.previousRank, 0)} menjadi ${formatNumber(selected.rank, 0)}.`;
+  if (!comparator) {
+    $("rankInsightSummary").textContent = `${movement} Belum ada kantor pembanding dalam kelompok ini.`;
+    $("rankInsightTable").innerHTML = '<tr><td colspan="4">Insight komparatif belum tersedia.</td></tr>';
+    $("rankInsightNote").textContent = "";
+    return;
+  }
+  const gapText = data.previousGap !== null && data.currentGap !== null
+    ? ` Gap score terhadap ${unitLabel(comparator)} berubah dari ${formatSigned(data.previousGap)} (H-1) menjadi ${formatSigned(data.currentGap)}, atau bergeser ${formatSigned(data.currentGap - data.previousGap)} poin bagi ${unitCode(selected)}.`
+    : ` Dibandingkan dengan ${unitLabel(comparator)}; gap H-1 belum lengkap.`;
+  $("rankInsightSummary").textContent = movement + gapText;
+  $("insightOwnGrowthHead").textContent = `Growth Score ${unitCode(selected)}`;
+  $("insightOtherGrowthHead").textContent = `Growth Score ${unitCode(comparator)}`;
+  const explanation = (item) => {
+    if (item.difference > 0) {
+      if (item.ownGrowth < 0) return "Keduanya turun, tetapi kita turun lebih kecil.";
+      if (item.otherGrowth < 0) return "Kinerja kita naik/stabil saat pesaing turun.";
+      return "Growth score kita lebih tinggi daripada pesaing.";
+    }
+    if (item.ownGrowth > 0) return "Keduanya naik, tetapi pesaing tumbuh lebih cepat.";
+    if (item.otherGrowth > 0) return "Kinerja kita turun/stabil saat pesaing naik.";
+    return "Penurunan score kita lebih dalam daripada pesaing.";
+  };
+  $("rankInsightTable").innerHTML = top.length ? top.map((item) => `
+    <tr>
+      <td><strong>${escapeHtml(item.name)}</strong><small>${explanation(item)}</small></td>
+      <td>${formatSigned(item.ownGrowth)}</td>
+      <td>${formatSigned(item.otherGrowth)}</td>
+      <td class="${item.difference > 0 ? "plus" : "minus"}">${formatSigned(item.difference)}</td>
+    </tr>
+  `).join("") : '<tr><td colspan="4">Tidak ada selisih growth score yang mendukung arah perubahan rank; penyebab belum dapat disimpulkan.</td></tr>';
+  const contribution = top.reduce((total, item) => total + item.difference, 0);
+  $("rankInsightNote").textContent = [
+    top.length ? `${top.length} parameter ini memberi kontribusi relatif ${formatSigned(contribution)} poin. Parameter lain dapat memperkuat atau mengimbangi; angka score dibulatkan sesuai sumber.` : "",
+    ...notes,
+  ].filter(Boolean).join(" ");
 }
 
 function tableRows(items, limit = 6) {
@@ -707,8 +827,10 @@ function renderDashboard(selectedCode) {
   assignGrowthRanks(classUnits);
   const totalPeers = classUnits.length;
 
-  const above = classUnits.find((unit) => unit.rank === selected.rank - 1);
-  const below = classUnits.find((unit) => unit.rank === selected.rank + 1);
+  // Source ranks can tie or skip a number; use adjacent units in the sorted peer list.
+  const selectedIndex = classUnits.findIndex((unit) => unit.code === selected.code);
+  const above = classUnits[selectedIndex - 1];
+  const below = classUnits[selectedIndex + 1];
   const leaderScore = classUnits[0]?.score ?? selected.score;
 
   const selectedCompareCode = isKanwil ? selected.rawCode : selected.code;
@@ -759,6 +881,7 @@ function renderDashboard(selectedCode) {
   $("valuedParameterCount").textContent = `Total Parameter update ${formatNumber(valuedParameters.length, 0)} Parameter`;
   $("positiveGrowthCount").textContent = `${formatNumber(positiveGrowth.length, 0)} Parameter aktif`;
   $("negativeGrowthCount").textContent = `${formatNumber(negativeGrowth.length, 0)} parameter`;
+  renderRankInsight(rankInsightData(sourceRows, selected, classUnits, above, below));
 
   $("aboveCard").innerHTML = rankCard(above, {
     modifier: above ? "Rank atas" : "Sudah rank tertinggi",
@@ -787,7 +910,7 @@ function renderDashboard(selectedCode) {
     role: "below",
     showGrowth: true,
     note: below
-      ? `${belowTight ? "Perlu dijaga ketat" : "Bantalan masih ada"} terhadap ${unitLabel(below)}.`
+      ? `${below.rank === selected.rank ? "Peringkat sama di sumber; urutan dibedakan oleh score. " : ""}${belowTight ? "Perlu dijaga ketat" : "Bantalan masih ada"} terhadap ${unitLabel(below)}.`
       : "",
   });
 

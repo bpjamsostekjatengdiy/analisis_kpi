@@ -930,6 +930,92 @@ td:not(:first-child) {
   line-height: 1.42;
 }
 
+.rank-insight {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.rank-insight-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.rank-insight h3 {
+  margin: 0;
+  font-size: 13px;
+}
+
+.rank-insight p {
+  margin: 7px 0;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.rank-insight-table {
+  width: 100%;
+  min-width: 0;
+  table-layout: fixed;
+}
+
+.rank-insight-table th,
+.rank-insight-table td {
+  padding: 8px 10px;
+  font-size: 10px;
+  line-height: 1.25;
+  vertical-align: middle;
+}
+
+.rank-insight-table th:first-child,
+.rank-insight-table td:first-child {
+  width: 52%;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.rank-insight-table th:not(:first-child),
+.rank-insight-table td:not(:first-child) {
+  width: 16%;
+  text-align: right;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.rank-insight-table th:not(:first-child) {
+  white-space: normal;
+}
+
+.rank-insight-table td:not(:first-child) {
+  white-space: nowrap;
+}
+
+.rank-insight-table th {
+  background: var(--surface-2);
+  font-size: 9px;
+}
+
+.rank-insight-table strong {
+  display: block;
+  font-size: 11px;
+}
+
+.rank-insight-table small {
+  display: block;
+  margin-top: 3px;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.rank-insight .rank-insight-note {
+  color: var(--muted);
+  font-size: 10px;
+  margin-bottom: 0;
+}
+
 .swot-page .content {
   gap: 10px;
 }
@@ -1926,5 +2012,36 @@ td:not(:first-child) {
   .verdict {
     font-size: 7px;
     padding: 5px;
+  }
+
+  .rank-insight {
+    margin-top: 4px;
+    padding-top: 4px;
+    break-inside: avoid;
+  }
+
+  .rank-insight h3 {
+    font-size: 8px;
+  }
+
+  .rank-insight p,
+  .rank-insight .rank-insight-note,
+  .rank-insight-table th,
+  .rank-insight-table td,
+  .rank-insight-table th:not(:first-child),
+  .rank-insight-table td:not(:first-child),
+  .rank-insight-table strong,
+  .rank-insight-table small {
+    font-size: 6.6px;
+    line-height: 1.15;
+  }
+
+  .rank-insight p {
+    margin: 3px 0;
+  }
+
+  .rank-insight-table th,
+  .rank-insight-table td {
+    padding: 2px 3px;
   }
 }
