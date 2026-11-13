@@ -8,7 +8,7 @@
       name="description"
       content="Dashboard eksekutif KPI cabang jajaran 905 dengan pembanding ranking nasional sesuai kelas."
     />
-    <link rel="stylesheet" href="styles.css?v=20261019-insight-table" />
+    <link rel="stylesheet" href="styles.css?v=20261111-compact-tables" />
   </head>
   <body>
     <main class="dashboard" aria-live="polite">
@@ -27,7 +27,7 @@
         </div>
         <div class="header-actions">
           <a class="nav-btn" href="swot.html">SWOT Analysis</a>
-          <button type="button" class="export-btn" id="exportJpgBtn">Export JPG</button>
+          <button type="button" class="export-btn" id="exportJpgBtn">Export JPEG</button>
           <button type="button" class="print-btn" id="printBtn">Print PDF</button>
           <div class="status-pill" id="refreshStatus">Live data</div>
         </div>
@@ -44,25 +44,29 @@
       </section>
 
       <section class="content hidden" id="dashboardContent">
-        <section class="control-panel" aria-label="Pilih unit analisis">
-          <label for="unitSelect">
-            <span class="eyebrow">Unit Analisis</span>
-            <select id="unitSelect"></select>
-          </label>
-          <div class="control-note" id="classNote">Default Kanwil Jateng dan DIY; cabang jajaran 905 tersedia di pilihan berikutnya.</div>
+        <section class="control-panel unit-filter" aria-label="Filter unit kerja">
+          <label class="eyebrow" for="unitSelect">Unit Kerja</label>
+          <select id="unitSelect"></select>
         </section>
 
-        <section class="panel narrative-panel">
-          <div class="panel-head">
-            <div>
-              <p class="eyebrow">Rangkuman Eksekutif</p>
-              <h2>Narasi Head-To-Head</h2>
+        <section class="grid-2 executive-grid" aria-label="Rangkuman eksekutif">
+          <article class="panel narrative-panel" aria-labelledby="executiveNarrativeTitle">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Rangkuman Eksekutif</p>
+                <h2 id="executiveNarrativeTitle">Narasi Head-To-Head</h2>
+              </div>
             </div>
-          </div>
-          <div id="executiveNarrative" class="narrative-list"></div>
-          <section class="rank-insight" aria-labelledby="rankInsightTitle">
-            <div class="rank-insight-head">
-              <h3 id="rankInsightTitle">Insight</h3>
+            <table class="narrative-table" aria-labelledby="executiveNarrativeTitle">
+              <tbody id="executiveNarrative"></tbody>
+            </table>
+          </article>
+          <article class="panel rank-insight" aria-labelledby="rankInsightTitle">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Perubahan Peringkat</p>
+                <h2 id="rankInsightTitle">Insight</h2>
+              </div>
               <span class="mini-tag" id="insightRankChange">-</span>
             </div>
             <p id="rankInsightSummary"></p>
@@ -80,7 +84,11 @@
               </table>
             </div>
             <p class="rank-insight-note" id="rankInsightNote"></p>
-          </section>
+            <section class="insight-actions" aria-labelledby="insightActionsTitle">
+              <h3 id="insightActionsTitle">Arahan Eksekusi</h3>
+              <div class="actions" id="actions"></div>
+            </section>
+          </article>
         </section>
 
         <section class="scoreboard" aria-label="Posisi ranking cabang nasional sesuai kelas">
@@ -108,147 +116,137 @@
           </article>
         </section>
 
-        <section class="panel main-parameter-panel">
-          <div class="panel-head">
-            <div>
-              <p class="eyebrow">Parameter Utama</p>
-              <h2>Monitoring Growth Harian</h2>
-            </div>
-            <span class="tag" id="valuedParameterCount">Total Parameter update -</span>
+        <section class="grid-2 parameter-comparison-grid" aria-label="Parameter dan pembanding">
+          <div class="monitoring-column">
+            <article class="panel main-parameter-panel" aria-labelledby="monitoringTitle">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Parameter Utama</p>
+                  <h2 id="monitoringTitle">Monitoring Growth Harian</h2>
+                </div>
+                <span class="tag" id="valuedParameterCount">Total Parameter update -</span>
+              </div>
+              <div class="parameter-subpanel negative-growth-block">
+                <div class="parameter-subpanel-head negative-growth-head">
+                  <h3>Parameter Turun</h3>
+                  <span class="mini-tag danger" id="negativeGrowthCount">-</span>
+                </div>
+                <div class="table-wrap negative-growth-table-wrap">
+                  <table class="negative-growth-table">
+                    <thead>
+                      <tr>
+                        <th>Parameter</th>
+                        <th>Growth Harian</th>
+                        <th>Realisasi</th>
+                        <th>Rank</th>
+                        <th>Score</th>
+                        <th>Bobot</th>
+                      </tr>
+                    </thead>
+                    <tbody id="negativeGrowthTable"></tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="parameter-subpanel primary-parameter-subpanel">
+                <div class="parameter-subpanel-head">
+                  <h3>Parameter Naik / Stabil</h3>
+                  <span class="mini-tag" id="positiveGrowthCount">- parameter aktif</span>
+                </div>
+                <div class="table-wrap main-parameter-table-wrap">
+                  <table class="main-parameter-table">
+                    <thead>
+                      <tr>
+                        <th>Parameter</th>
+                        <th>Growth Harian</th>
+                        <th>Realisasi</th>
+                        <th>Rank</th>
+                        <th>Score</th>
+                        <th>Bobot</th>
+                      </tr>
+                    </thead>
+                    <tbody id="mainParameterTable"></tbody>
+                  </table>
+                </div>
+              </div>
+            </article>
+            <section class="verdict" id="verdict"></section>
           </div>
-          <div class="parameter-subpanel primary-parameter-subpanel">
-            <div class="parameter-subpanel-head">
-              <h3>Parameter Naik / Stabil</h3>
-              <span class="mini-tag" id="positiveGrowthCount">- parameter aktif</span>
-            </div>
-            <div class="table-wrap main-parameter-table-wrap">
-              <table class="main-parameter-table">
-                <thead>
-                  <tr>
-                    <th>Parameter</th>
-                    <th>Growth Harian</th>
-                    <th>Realisasi</th>
-                    <th>Rank</th>
-                    <th>Score</th>
-                    <th>Bobot</th>
-                  </tr>
-                </thead>
-                <tbody id="mainParameterTable"></tbody>
-              </table>
-            </div>
-          </div>
-          <div class="parameter-subpanel negative-growth-block">
-            <div class="parameter-subpanel-head negative-growth-head">
-              <div>
-                <h3>Parameter Turun</h3>
-              </div>
-              <span class="mini-tag danger" id="negativeGrowthCount">-</span>
-            </div>
-            <div class="table-wrap negative-growth-table-wrap">
-              <table class="negative-growth-table">
-                <thead>
-                  <tr>
-                    <th>Parameter</th>
-                    <th>Growth Harian</th>
-                    <th>Realisasi</th>
-                    <th>Rank</th>
-                    <th>Score</th>
-                    <th>Bobot</th>
-                  </tr>
-                </thead>
-                <tbody id="negativeGrowthTable"></tbody>
-              </table>
-            </div>
-          </div>
-        </section>
 
-        <section class="grid-2">
-          <article class="panel">
-            <div class="panel-head">
-              <div>
-                <p class="eyebrow">Head-To-Head</p>
-                <h2 id="aboveTitle">Tekanan Ke Rank Atas</h2>
+          <article class="panel comparison-panel" aria-label="Pembanding peringkat">
+            <section class="comparison-section" aria-labelledby="aboveTitle">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Head-To-Head</p>
+                  <h2 id="aboveTitle">Tekanan Ke Rank Atas</h2>
+                </div>
+                <span class="tag" id="aboveTag">-</span>
               </div>
-              <span class="tag" id="aboveTag">-</span>
-            </div>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Rank</th>
-                    <th>Indikator</th>
-                    <th id="aboveMeScoreHead">Score Unit</th>
-                    <th id="aboveScoreHead">Score Lawan</th>
-                    <th>Gap</th>
-                  </tr>
-                </thead>
-                <tbody id="aboveTable"></tbody>
-              </table>
-            </div>
-          </article>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Rank</th>
+                      <th>Indikator</th>
+                      <th id="aboveMeScoreHead">Score Unit</th>
+                      <th id="aboveScoreHead">Score Lawan</th>
+                      <th>Gap</th>
+                    </tr>
+                  </thead>
+                  <tbody id="aboveTable"></tbody>
+                </table>
+              </div>
+            </section>
 
-          <article class="panel">
-            <div class="panel-head">
-              <div>
-                <p class="eyebrow">Risiko Ketersusulan</p>
-                <h2 id="belowTitle">Ancaman Dari Rank Bawah</h2>
+            <section class="comparison-section" aria-labelledby="belowTitle">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Risiko Ketersusulan</p>
+                  <h2 id="belowTitle">Ancaman Dari Rank Bawah</h2>
+                </div>
+                <span class="tag" id="belowTag">-</span>
               </div>
-              <span class="tag" id="belowTag">-</span>
-            </div>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Rank</th>
-                    <th>Indikator</th>
-                    <th id="belowMeScoreHead">Score Unit</th>
-                    <th id="belowScoreHead">Score Lawan</th>
-                    <th>Gap</th>
-                  </tr>
-                </thead>
-                <tbody id="belowRiskTable"></tbody>
-              </table>
-            </div>
-          </article>
-        </section>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Rank</th>
+                      <th>Indikator</th>
+                      <th id="belowMeScoreHead">Score Unit</th>
+                      <th id="belowScoreHead">Score Lawan</th>
+                      <th>Gap</th>
+                    </tr>
+                  </thead>
+                  <tbody id="belowRiskTable"></tbody>
+                </table>
+              </div>
+            </section>
 
-        <section class="grid-2 bottom">
-          <article class="panel">
-            <div class="panel-head">
-              <div>
-                <p class="eyebrow">Penyangga Posisi</p>
-                <h2 id="bufferTitle">Keunggulan Terhadap Rank Bawah</h2>
+            <section class="comparison-section" aria-labelledby="bufferTitle">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Penyangga Posisi</p>
+                  <h2 id="bufferTitle">Keunggulan Terhadap Rank Bawah</h2>
+                </div>
+                <span class="tag">Bantalan score</span>
               </div>
-              <span class="tag">Bantalan score</span>
-            </div>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Rank</th>
-                    <th>Indikator</th>
-                    <th id="bufferMeScoreHead">Score Unit</th>
-                    <th id="bufferScoreHead">Score Lawan</th>
-                    <th>Gap</th>
-                  </tr>
-                </thead>
-                <tbody id="bufferTable"></tbody>
-              </table>
-            </div>
-          </article>
-
-          <article class="panel action-panel">
-            <div class="panel-head">
-              <div>
-                <p class="eyebrow">Arahan Eksekusi</p>
-                <h2>Prioritas Hari Ini</h2>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Rank</th>
+                      <th>Indikator</th>
+                      <th id="bufferMeScoreHead">Score Unit</th>
+                      <th id="bufferScoreHead">Score Lawan</th>
+                      <th>Gap</th>
+                    </tr>
+                  </thead>
+                  <tbody id="bufferTable"></tbody>
+                </table>
               </div>
-            </div>
-            <div class="actions" id="actions"></div>
+            </section>
           </article>
         </section>
 
-        <section class="verdict" id="verdict"></section>
       </section>
 
       <footer>
@@ -264,6 +262,6 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    <script src="app.js?v=20261019-rank-insight"></script>
+    <script src="app.js?v=20261111-hd-jpeg"></script>
   </body>
 </html>

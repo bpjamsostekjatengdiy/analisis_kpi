@@ -38,9 +38,13 @@ body {
 }
 
 .dashboard {
-  width: min(1180px, calc(100% - 32px));
+  width: min(var(--dashboard-max-width, 1180px), calc(100% - 32px));
   margin: 0 auto;
   padding: 28px 0;
+}
+
+.dashboard:not(.swot-page) {
+  --dashboard-max-width: 1280px;
 }
 
 .hero {
@@ -239,6 +243,11 @@ footer {
 .control-panel label {
   display: grid;
   gap: 8px;
+}
+
+.unit-filter label {
+  display: block;
+  margin: 0;
 }
 
 select {
@@ -510,8 +519,36 @@ select {
   gap: 14px;
 }
 
-.bottom {
-  grid-template-columns: 1.16fr 0.84fr;
+.parameter-comparison-grid {
+  grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
+  align-items: start;
+}
+
+.monitoring-column {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  min-width: 0;
+}
+
+.comparison-section + .comparison-section {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.comparison-panel .panel-head,
+.main-parameter-panel > .panel-head {
+  flex-wrap: wrap;
+  gap: 6px 12px;
+}
+
+.comparison-panel table {
+  min-width: 0;
+}
+
+.comparison-panel th:not(:first-child) {
+  white-space: normal;
 }
 
 .panel {
@@ -527,7 +564,7 @@ select {
 
 .main-parameter-panel {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 10px;
   align-items: start;
   padding: 13px;
@@ -561,7 +598,7 @@ select {
 
 .parameter-subpanel-head h3 {
   margin: 0;
-  font-size: 12px;
+  font-size: calc(12px + var(--panel-font-increase, 0px));
   line-height: 1.2;
 }
 
@@ -575,7 +612,7 @@ select {
   background: rgba(223, 243, 233, 0.72);
   color: var(--primary-deep);
   padding: 4px 8px;
-  font-size: 10px;
+  font-size: calc(10px + var(--panel-font-increase, 0px));
   font-weight: 800;
   white-space: nowrap;
 }
@@ -595,15 +632,25 @@ select {
 }
 
 .main-parameter-table th,
-.main-parameter-table td {
-  padding: 7px 8px;
-  font-size: 11px;
+.main-parameter-table td,
+.negative-growth-table th,
+.negative-growth-table td {
+  padding: 5px 8px;
+  font-size: calc(11px + var(--panel-font-increase, 0px));
   line-height: 1.18;
 }
 
 .main-parameter-table th:first-child,
-.main-parameter-table td:first-child {
-  width: 30%;
+.main-parameter-table td:first-child,
+.negative-growth-table th:first-child,
+.negative-growth-table td:first-child {
+  width: 38%;
+}
+
+.main-parameter-table :is(th, td):nth-child(2),
+.negative-growth-table :is(th, td):nth-child(2) {
+  width: 22%;
+  text-align: right;
 }
 
 .negative-growth-block {
@@ -619,23 +666,10 @@ select {
 .negative-growth-table-wrap {
   max-height: none;
   margin-top: 0;
-  overflow: visible;
 }
 
 .negative-growth-table {
   min-width: 0;
-}
-
-.negative-growth-table th,
-.negative-growth-table td {
-  padding: 7px 8px;
-  font-size: 11px;
-  line-height: 1.18;
-}
-
-.negative-growth-table th:first-child,
-.negative-growth-table td:first-child {
-  width: 38%;
 }
 
 .movement-section-row td,
@@ -645,7 +679,7 @@ select {
   border-bottom-color: rgba(0, 114, 188, 0.12);
   background: rgba(220, 238, 249, 0.42);
   color: var(--blue);
-  font-size: 10px;
+  font-size: calc(10px + var(--panel-font-increase, 0px));
   font-weight: 900;
   letter-spacing: 0.04em;
   text-align: left;
@@ -695,17 +729,27 @@ td:not(:first-child) {
   font-weight: 800;
 }
 
-.actions {
-  display: grid;
-  gap: 10px;
+.insight-actions {
   margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.insight-actions h3 {
+  margin: 0;
+  font-size: calc(13px + var(--panel-font-increase, 0px));
+}
+
+.actions {
+  margin-top: 6px;
 }
 
 .action {
-  padding: 13px 14px;
-  border-left: 5px solid var(--primary);
-  border-radius: 10px;
-  background: var(--surface-2);
+  padding: 7px 0;
+}
+
+.action + .action {
+  border-top: 1px solid var(--line);
 }
 
 .action strong {
@@ -713,6 +757,7 @@ td:not(:first-child) {
   align-items: center;
   gap: 7px;
   margin-bottom: 4px;
+  font-size: calc(1em + var(--panel-font-increase, 0px));
 }
 
 .action p {
@@ -758,7 +803,7 @@ h1 {
 }
 
 h2 {
-  font-size: 15px;
+  font-size: calc(15px + var(--panel-font-increase, 0px));
 }
 
 .eyebrow,
@@ -767,7 +812,7 @@ h2 {
 th,
 .metric-label,
 .critical-table th {
-  font-size: 10px;
+  font-size: calc(10px + var(--panel-font-increase, 0px));
 }
 
 .status-pill,
@@ -776,7 +821,7 @@ th,
 .rank-note,
 .control-note,
 footer {
-  font-size: 11.5px;
+  font-size: calc(11.5px + var(--panel-font-increase, 0px));
 }
 
 .control-panel,
@@ -788,7 +833,7 @@ footer {
 
 select {
   padding: 8px 10px;
-  font-size: 12.5px;
+  font-size: calc(12.5px + var(--panel-font-increase, 0px));
 }
 
 .rank-card,
@@ -860,7 +905,7 @@ td {
 }
 
 td {
-  font-size: 12px;
+  font-size: calc(12px + var(--panel-font-increase, 0px));
   line-height: 1.3;
 }
 
@@ -882,42 +927,30 @@ td:nth-child(2) {
 
 th:not(:first-child),
 td:not(:first-child) {
-  font-size: 11.5px;
-}
-
-.actions {
-  gap: 8px;
-}
-
-.action {
-  padding: 9px 11px;
+  font-size: calc(11.5px + var(--panel-font-increase, 0px));
 }
 
 .action p {
-  font-size: 11.5px;
+  font-size: calc(11.5px + var(--panel-font-increase, 0px));
 }
 
-.narrative-list {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 8px;
+.narrative-table {
+  min-width: 0;
   margin-top: 10px;
 }
 
-.narrative-item {
-  min-height: 92px;
-  padding: 10px 11px;
-  border: 1px solid rgba(0, 130, 71, 0.16);
-  border-left: 4px solid var(--green);
-  border-radius: 10px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(241, 250, 247, 0.78));
+.narrative-table td:first-child {
+  width: auto;
+  padding: 8px 0;
+  font-weight: 400;
+  overflow-wrap: anywhere;
 }
 
-.narrative-item span {
+.narrative-item strong {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
   color: var(--blue);
-  font-size: 10px;
+  font-size: calc(10px + var(--panel-font-increase, 0px));
   font-weight: 800;
   letter-spacing: 0;
   text-transform: uppercase;
@@ -926,31 +959,13 @@ td:not(:first-child) {
 .narrative-item p {
   margin: 0;
   color: var(--text);
-  font-size: 11.2px;
+  font-size: calc(12px + var(--panel-font-increase, 0px));
   line-height: 1.42;
 }
 
-.rank-insight {
-  margin-top: 12px;
-  padding-top: 10px;
-  border-top: 1px solid var(--line);
-}
-
-.rank-insight-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.rank-insight h3 {
-  margin: 0;
-  font-size: 13px;
-}
-
-.rank-insight p {
+.rank-insight > p {
   margin: 7px 0;
-  font-size: 11px;
+  font-size: calc(11px + var(--panel-font-increase, 0px));
   line-height: 1.4;
 }
 
@@ -963,7 +978,7 @@ td:not(:first-child) {
 .rank-insight-table th,
 .rank-insight-table td {
   padding: 8px 10px;
-  font-size: 10px;
+  font-size: calc(10px + var(--panel-font-increase, 0px));
   line-height: 1.25;
   vertical-align: middle;
 }
@@ -980,7 +995,7 @@ td:not(:first-child) {
 .rank-insight-table td:not(:first-child) {
   width: 16%;
   text-align: right;
-  font-size: 10px;
+  font-size: calc(10px + var(--panel-font-increase, 0px));
   font-variant-numeric: tabular-nums;
 }
 
@@ -994,25 +1009,25 @@ td:not(:first-child) {
 
 .rank-insight-table th {
   background: var(--surface-2);
-  font-size: 9px;
+  font-size: calc(9px + var(--panel-font-increase, 0px));
 }
 
 .rank-insight-table strong {
   display: block;
-  font-size: 11px;
+  font-size: calc(11px + var(--panel-font-increase, 0px));
 }
 
 .rank-insight-table small {
   display: block;
   margin-top: 3px;
-  font-size: 10px;
+  font-size: calc(10px + var(--panel-font-increase, 0px));
   font-weight: 400;
   color: var(--muted);
 }
 
 .rank-insight .rank-insight-note {
   color: var(--muted);
-  font-size: 10px;
+  font-size: calc(10px + var(--panel-font-increase, 0px));
   margin-bottom: 0;
 }
 
@@ -1354,32 +1369,45 @@ td:not(:first-child) {
 
 .verdict {
   padding: 13px 15px;
-  font-size: 13px;
+  font-size: calc(13px + var(--panel-font-increase, 0px));
+}
+
+@media screen {
+  .dashboard:not(.swot-page) :is(.panel, .control-panel, .verdict) {
+    --panel-font-increase: 2px;
+  }
+
+  .control-panel.unit-filter {
+    grid-template-columns: max-content minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+  }
+
+  .unit-filter select {
+    min-width: 0;
+    max-width: 560px;
+    padding: 5px 8px;
+    border-radius: 6px;
+  }
+}
+
+@media (max-width: 1040px) {
+  .parameter-comparison-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 @media (max-width: 900px) {
   .scoreboard,
   .grid-2,
-  .bottom,
   .control-panel {
-    grid-template-columns: 1fr;
-  }
-
-  .narrative-list {
-    grid-template-columns: 1fr;
-  }
-
-  .main-parameter-panel {
     grid-template-columns: 1fr;
   }
 
   .negative-growth-block {
     padding-left: 0;
     border-left: 4px solid var(--danger);
-  }
-
-  .narrative-item {
-    min-height: auto;
   }
 
   .swot-summary,
@@ -1414,6 +1442,358 @@ td:not(:first-child) {
   .status-pill,
   .tag {
     justify-self: start;
+  }
+}
+
+/* A dedicated image layout, applied only to html2canvas's cloned document. */
+.is-exporting .dashboard {
+  width: 1400px;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.is-exporting .hero {
+  grid-template-columns: 1fr;
+  margin-bottom: 14px;
+}
+
+.is-exporting .brand-lockup {
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 18px;
+}
+
+.is-exporting .brand-logo {
+  width: 150px;
+}
+
+.is-exporting h1 {
+  font-size: 34px;
+  line-height: 1.2;
+}
+
+.is-exporting h2,
+.is-exporting .insight-actions h3,
+.is-exporting .parameter-subpanel-head h3 {
+  font-size: calc(22px + var(--panel-font-increase, 0px));
+  line-height: 1.3;
+}
+
+.is-exporting .eyebrow,
+.is-exporting .rank-label,
+.is-exporting .signal-label,
+.is-exporting .metric-label,
+.is-exporting .tag,
+.is-exporting .mini-tag {
+  font-size: calc(16px + var(--panel-font-increase, 0px));
+  letter-spacing: 0;
+}
+
+.is-exporting .subhead,
+.is-exporting .control-note,
+.is-exporting .rank-gap,
+.is-exporting .rank-note,
+.is-exporting .signal p,
+.is-exporting .action p,
+.is-exporting .export-unit-label {
+  font-size: calc(18px + var(--panel-font-increase, 0px));
+  line-height: 1.4;
+}
+
+.is-exporting .content {
+  gap: 14px;
+}
+
+.is-exporting .control-panel {
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.is-exporting .control-panel label {
+  gap: 2px;
+}
+
+.is-exporting .control-note {
+  display: none;
+}
+
+.is-exporting .panel,
+.is-exporting .rank-card,
+.is-exporting .signal,
+.is-exporting .control-panel {
+  padding: 14px;
+  box-shadow: none;
+}
+
+.is-exporting .unit-filter {
+  grid-template-columns: max-content minmax(0, 1fr);
+  padding: 8px 12px;
+}
+
+.is-exporting .panel-head {
+  display: flex;
+  align-items: center;
+}
+
+.is-exporting .narrative-table td:first-child {
+  width: auto;
+  padding: 8px 0;
+}
+
+.is-exporting .narrative-item strong,
+.is-exporting .narrative-item p {
+  font-size: calc(18px + var(--panel-font-increase, 0px));
+  line-height: 1.4;
+}
+
+.is-exporting .rank-insight > p,
+.is-exporting .rank-insight .rank-insight-note,
+.is-exporting .rank-insight-table small {
+  font-size: calc(18px + var(--panel-font-increase, 0px));
+  line-height: 1.4;
+}
+
+.is-exporting .rank-insight-table strong {
+  font-size: calc(18px + var(--panel-font-increase, 0px));
+}
+
+.is-exporting .scoreboard {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.58fr);
+  gap: 12px;
+}
+
+.is-exporting .rank-top {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.is-exporting .rank-name {
+  font-size: 18px;
+  line-height: 1.35;
+  margin: 8px 0;
+}
+
+.is-exporting .rank-metrics {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.is-exporting .rank-metrics .metric-label {
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.is-exporting .rank-metrics > div:last-child {
+  text-align: right;
+}
+
+.is-exporting .rank-score {
+  display: block;
+  font-size: 36px;
+}
+
+.is-exporting .rank-delta {
+  font-size: 24px;
+}
+
+.is-exporting .growth-pill,
+.is-exporting .growth-pill em {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.is-exporting .growth-pill strong {
+  font-size: 18px;
+}
+
+.is-exporting .signal strong {
+  font-size: 22px;
+}
+
+.is-exporting .grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.is-exporting .parameter-comparison-grid {
+  grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
+}
+
+.is-exporting .main-parameter-panel {
+  gap: 14px;
+}
+
+.is-exporting .parameter-subpanel {
+  padding: 12px;
+  height: auto;
+}
+
+.is-exporting .table-wrap,
+.is-exporting .critical-table-wrap {
+  max-height: none;
+  overflow: visible;
+  margin-top: 10px;
+}
+
+.is-exporting table {
+  min-width: 0;
+  table-layout: fixed;
+}
+
+.is-exporting table th,
+.is-exporting table td {
+  padding: 7px 4px;
+  font-size: calc(16px + var(--panel-font-increase, 0px));
+  line-height: 1.3;
+  vertical-align: middle;
+}
+
+.is-exporting table th {
+  font-size: calc(14px + var(--panel-font-increase, 0px));
+}
+
+.is-exporting .comparison-panel table td:nth-child(2),
+.is-exporting .main-parameter-table td:first-child,
+.is-exporting .negative-growth-table td:first-child {
+  font-size: calc(18px + var(--panel-font-increase, 0px));
+}
+
+.is-exporting table th:first-child,
+.is-exporting table td:first-child {
+  width: 7%;
+}
+
+.is-exporting .comparison-panel th:first-child,
+.is-exporting .comparison-panel td:first-child {
+  width: 10%;
+}
+
+.is-exporting table th:nth-child(2),
+.is-exporting table td:nth-child(2) {
+  width: 39%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.is-exporting table th:not(:first-child) {
+  white-space: normal;
+}
+
+.is-exporting .critical-table th,
+.is-exporting .critical-table td {
+  padding: 5px 4px;
+  font-size: 14px;
+}
+
+.is-exporting .critical-table th {
+  font-size: 12px;
+}
+
+.is-exporting .critical-table :is(th, td):first-child {
+  width: 10%;
+}
+
+.is-exporting .critical-table :is(th, td):nth-child(2) {
+  width: 33%;
+}
+
+.is-exporting .main-parameter-table th:first-child,
+.is-exporting .main-parameter-table td:first-child,
+.is-exporting .negative-growth-table th:first-child,
+.is-exporting .negative-growth-table td:first-child {
+  width: 27%;
+}
+
+.is-exporting .main-parameter-table th:nth-child(2),
+.is-exporting .main-parameter-table td:nth-child(2),
+.is-exporting .negative-growth-table th:nth-child(2),
+.is-exporting .negative-growth-table td:nth-child(2) {
+  width: 23%;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.is-exporting .main-parameter-table th:nth-child(3),
+.is-exporting .main-parameter-table td:nth-child(3),
+.is-exporting .negative-growth-table th:nth-child(3),
+.is-exporting .negative-growth-table td:nth-child(3) {
+  width: 26%;
+}
+
+.is-exporting .main-parameter-table th:nth-child(n + 4),
+.is-exporting .main-parameter-table td:nth-child(n + 4),
+.is-exporting .negative-growth-table th:nth-child(n + 4),
+.is-exporting .negative-growth-table td:nth-child(n + 4) {
+  width: 8%;
+}
+
+.is-exporting .rank-insight-table th:first-child,
+.is-exporting .rank-insight-table td:first-child {
+  width: 49%;
+}
+
+.is-exporting .rank-insight-table th:not(:first-child),
+.is-exporting .rank-insight-table td:not(:first-child) {
+  width: 17%;
+  text-align: right;
+  font-size: calc(16px + var(--panel-font-increase, 0px));
+}
+
+.is-exporting .rank-insight-table th:not(:first-child) {
+  font-size: calc(14px + var(--panel-font-increase, 0px));
+}
+
+.is-exporting .rank-insight-table td:not(:first-child) {
+  white-space: nowrap;
+}
+
+.is-exporting .movement-section-row td {
+  font-size: calc(16px + var(--panel-font-increase, 0px));
+  letter-spacing: 0;
+}
+
+.is-exporting .action {
+  padding: 8px 0;
+}
+
+.is-exporting .action strong {
+  font-size: calc(20px + var(--panel-font-increase, 0px));
+}
+
+.is-exporting .verdict {
+  font-size: calc(18px + var(--panel-font-increase, 0px));
+  line-height: 1.4;
+  padding: 14px;
+}
+
+@media screen {
+  .parameter-comparison-grid :is(.main-parameter-panel, .comparison-panel) {
+    padding-block: 10px;
+  }
+
+  .parameter-comparison-grid .main-parameter-panel {
+    gap: 8px;
+  }
+
+  .parameter-comparison-grid .parameter-subpanel {
+    padding-block: 8px;
+  }
+
+  .parameter-comparison-grid .parameter-subpanel-head,
+  .parameter-comparison-grid .table-wrap {
+    margin-block: 5px 0;
+  }
+
+  .comparison-section + .comparison-section {
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+
+  .parameter-comparison-grid table :is(th, td),
+  .parameter-comparison-grid .movement-section-row td:first-child {
+    padding-block: 3px;
+    line-height: 1.2;
   }
 }
 
@@ -1496,6 +1876,11 @@ td:not(:first-child) {
     box-shadow: none;
   }
 
+  .unit-filter {
+    grid-template-columns: max-content minmax(0, 1fr);
+    align-items: center;
+  }
+
   select {
     padding: 5px 7px;
     font-size: 9px;
@@ -1575,10 +1960,27 @@ td:not(:first-child) {
     font-size: 6.2px;
   }
 
-  .grid-2,
-  .bottom {
+  .grid-2 {
     grid-template-columns: 1fr 1fr;
     gap: 4px;
+  }
+
+  .comparison-section + .comparison-section {
+    margin-top: 5px;
+    padding-top: 5px;
+  }
+
+  .monitoring-column {
+    gap: 4px;
+  }
+
+  .insight-actions {
+    margin-top: 4px;
+    padding-top: 4px;
+  }
+
+  .insight-actions h3 {
+    font-size: 8px;
   }
 
   .table-wrap {
@@ -1587,7 +1989,6 @@ td:not(:first-child) {
   }
 
   .main-parameter-panel {
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
     gap: 4px;
     padding: 5px;
   }
@@ -1980,20 +2381,15 @@ td:not(:first-child) {
     page-break-inside: avoid;
   }
 
-  .narrative-list {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 3px;
+  .narrative-table {
     margin-top: 3px;
   }
 
-  .narrative-item {
-    min-height: 36px;
-    padding: 4px 5px;
-    border-left-width: 3px;
-    border-radius: 6px;
+  .narrative-table td:first-child {
+    padding: 2px 0;
   }
 
-  .narrative-item span {
+  .narrative-item strong {
     margin-bottom: 1px;
     font-size: 5.6px;
   }
@@ -2015,16 +2411,10 @@ td:not(:first-child) {
   }
 
   .rank-insight {
-    margin-top: 4px;
-    padding-top: 4px;
     break-inside: avoid;
   }
 
-  .rank-insight h3 {
-    font-size: 8px;
-  }
-
-  .rank-insight p,
+  .rank-insight > p,
   .rank-insight .rank-insight-note,
   .rank-insight-table th,
   .rank-insight-table td,
@@ -2036,7 +2426,7 @@ td:not(:first-child) {
     line-height: 1.15;
   }
 
-  .rank-insight p {
+  .rank-insight > p {
     margin: 3px 0;
   }
 

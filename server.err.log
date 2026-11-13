@@ -1,36 +1,12 @@
-127.0.0.1 - - [19/Oct/2026 17:58:52] "GET /index.html HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 17:59:01] "GET /index.html HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 17:59:01] "GET /bpjs-ketenagakerjaan-logo.svg HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 17:59:01] "GET /styles.css HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 17:59:01] "GET /app.js?v=20260904-percent-growth HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 17:59:02] code 404, message File not found
-127.0.0.1 - - [19/Oct/2026 17:59:02] "GET /favicon.ico HTTP/1.1" 404 -
-127.0.0.1 - - [19/Oct/2026 17:59:05] "GET /index.html HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 17:59:06] "GET /styles.css HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 17:59:06] "GET /bpjs-ketenagakerjaan-logo.svg HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 17:59:06] "GET /app.js?v=20260904-percent-growth HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 17:59:06] code 404, message File not found
-127.0.0.1 - - [19/Oct/2026 17:59:06] "GET /favicon.ico HTTP/1.1" 404 -
-127.0.0.1 - - [19/Oct/2026 18:00:51] "GET /index.html HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 18:00:51] "GET /app.js?v=20261019-rank-neighbors HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 18:01:10] "GET /index.html HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 18:01:10] "GET /styles.css HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 18:01:10] "GET /bpjs-ketenagakerjaan-logo.svg HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 18:01:10] "GET /app.js?v=20261019-rank-neighbors HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 18:01:10] code 404, message File not found
-127.0.0.1 - - [19/Oct/2026 18:01:10] "GET /favicon.ico HTTP/1.1" 404 -
-127.0.0.1 - - [19/Oct/2026 18:03:34] "GET /index.html HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 18:03:34] "GET /app.js?v=20261019-rank-neighbors HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 18:09:46] "GET /index.html HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 18:09:47] "GET /app.js?v=20261019-rank-insight HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 18:10:29] "GET /index.html HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 18:10:37] "GET /index.html HTTP/1.1" 304 -
-127.0.0.1 - - [19/Oct/2026 18:10:37] "GET /app.js?v=20261019-rank-insight HTTP/1.1" 304 -
-127.0.0.1 - - [19/Oct/2026 18:11:06] "GET /index.html HTTP/1.1" 304 -
-127.0.0.1 - - [19/Oct/2026 18:11:06] "GET /app.js?v=20261019-rank-insight HTTP/1.1" 304 -
-127.0.0.1 - - [19/Oct/2026 18:11:57] "GET /index.html HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 18:11:57] "GET /styles.css?v=20261019-insight-table HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 18:12:57] "GET /index.html HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 18:12:57] "GET /styles.css?v=20261019-insight-table HTTP/1.1" 200 -
-127.0.0.1 - - [19/Oct/2026 18:12:57] "GET /app.js?v=20261019-rank-insight HTTP/1.1" 304 -
-127.0.0.1 - - [19/Oct/2026 18:22:36] "GET /styles.css?v=20261019-insight-table HTTP/1.1" 304 -
+127.0.0.1 - - [13/Nov/2026 17:03:12] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 17:03:13] "GET /bpjs-ketenagakerjaan-logo.svg HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 17:03:13] "GET /styles.css?v=20261111-compact-tables HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 17:03:13] "GET /app.js?v=20261111-hd-jpeg HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 17:03:13] code 404, message File not found
+127.0.0.1 - - [13/Nov/2026 17:03:13] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [13/Nov/2026 17:03:27] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 17:03:27] "GET /styles.css?v=20261111-compact-tables HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 17:03:27] "GET /bpjs-ketenagakerjaan-logo.svg HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 17:03:27] "GET /app.js?v=20261111-hd-jpeg HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 17:03:27] code 404, message File not found
+127.0.0.1 - - [13/Nov/2026 17:03:27] "GET /favicon.ico HTTP/1.1" 404 -

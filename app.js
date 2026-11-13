@@ -868,9 +868,6 @@ function renderDashboard(selectedCode) {
   ].join(" ");
 
   $("dataStamp").textContent = `Periode ${formatDateId(latest.processDate)}`;
-  $("classNote").textContent = isKanwil
-    ? `${unitLabel(selected)} berada di rank ${formatNumber(selected.rank, 0)} dari ${formatNumber(totalPeers, 0)} Kanwil nasional.`
-    : `${unitLabel(selected)} berada di rank ${formatNumber(selected.rank, 0)} dari ${formatNumber(totalPeers, 0)} cabang nasional di ${selected.className}.`;
   $("sourceInfo").textContent = `Sumber: Google Sheets publik, ${sourceRows.length} baris ${isKanwil ? "Kanwil" : "cabang"} terbaru`;
   const selectedRows = sourceRows.filter((row) => row.kode_kantor === selectedCompareCode);
   const positiveGrowth = movementItems(selectedRows, "up");
@@ -988,11 +985,27 @@ function renderDashboard(selectedCode) {
     topAttack || topRisk || topBuffer
       ? `Arah eksekusi paling rasional adalah menutup gap terbesar lebih dulu, mengamankan parameter yang bisa membuat posisi tersusul, lalu menjaga bantalan score yang sudah unggul agar tidak ikut tergerus.`
       : "Arah eksekusi utama adalah menjaga konsistensi score harian dan memperbesar indikator yang masih memberi ruang kenaikan.";
+  const exportNarratives = {
+    "Tekanan rank atas": above
+      ? `${unitLabel(above)}: gap ${formatSigned(gapAbove)} score.${topAttack ? ` Fokus ${topAttack.name} (${formatSigned(topAttack.gap)}).` : ""}`
+      : "Sudah berada di posisi tertinggi pada kelompok pembanding.",
+    "Risiko tersusul": below
+      ? `${unitLabel(below)}: jarak ${formatSigned(gapBelow)} score.${topRisk ? ` Risiko terbesar ${topRisk.name} (${formatSigned(topRisk.gap)}).` : ""}`
+      : "Tidak ada pesaing tepat di bawah posisi ini.",
+    "Pain point": critical
+      ? `${critical.name}: rank ${formatNumber(critical.selectedRank, 0)}, capaian ${formatMetricValue(critical.name, critical.achievement, "achievement")}.`
+      : "Belum ada pain point dominan.",
+    "Arah eksekusi": topBuffer
+      ? `Jaga ${topBuffer.name} sebagai bantalan ${formatSigned(topBuffer.gap)} score. Tutup gap utama dan amankan parameter yang tertinggal dari pesaing bawah.`
+      : "Tutup gap utama dan perbesar bantalan pada indikator unggulan.",
+  };
   const narrativeItem = (label, text) => `
-    <div class="narrative-item">
-      <span>${escapeHtml(label)}</span>
-      <p>${escapeHtml(text)}</p>
-    </div>
+    <tr class="narrative-item">
+      <td>
+        <strong>${escapeHtml(label)}</strong>
+        <p data-export-text="${escapeHtml(exportNarratives[label] ?? text)}">${escapeHtml(text)}</p>
+      </td>
+    </tr>
   `;
 
   $("executiveNarrative").innerHTML = `
@@ -1119,16 +1132,31 @@ $("exportJpgBtn")?.addEventListener("click", async () => {
   const originalText = button.textContent;
   button.textContent = "Exporting...";
   button.disabled = true;
-  document.body.classList.add("is-exporting");
 
   try {
-    const exportScale = Math.min(4, Math.max(3, window.devicePixelRatio || 2));
+    await document.fonts.ready;
+    const exportScale = 3.5;
     const canvas = await window.html2canvas(dashboard, {
       backgroundColor: "#eef6f4",
       scale: exportScale,
       useCORS: true,
       logging: false,
       imageTimeout: 30000,
+      windowWidth: 1480,
+      windowHeight: 900,
+      scrollX: 0,
+      scrollY: 0,
+      onclone: (clonedDocument) => {
+        clonedDocument.body.classList.add("is-exporting");
+        const select = clonedDocument.getElementById("unitSelect");
+        const selectedLabel = clonedDocument.createElement("div");
+        selectedLabel.className = "export-unit-label";
+        selectedLabel.textContent = $("unitSelect").selectedOptions[0]?.textContent ?? "-";
+        select.replaceWith(selectedLabel);
+        clonedDocument.querySelectorAll(".narrative-item p[data-export-text]").forEach((paragraph) => {
+          paragraph.textContent = paragraph.dataset.exportText;
+        });
+      },
     });
     const marginCm = 1;
     const marginPx = Math.round((96 / 2.54) * marginCm * exportScale);
@@ -1140,14 +1168,23 @@ $("exportJpgBtn")?.addEventListener("click", async () => {
     context.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
     context.drawImage(canvas, marginPx, marginPx);
 
+    const blob = await new Promise((resolve, reject) => {
+      exportCanvas.toBlob((result) => result ? resolve(result) : reject(new Error("Gambar gagal dibuat.")),
+        "image/jpeg", 1);
+    });
     const link = document.createElement("a");
     const unit = $("unitSelect")?.value?.replace("KW:", "KANWIL-") || "dashboard";
     const date = new Date().toISOString().slice(0, 10);
-    link.download = `dashboard-kpi-${unit}-${date}.jpg`;
-    link.href = exportCanvas.toDataURL("image/jpeg", 0.98);
+    link.download = `dashboard-kpi-${unit}-${date}.jpeg`;
+    const downloadUrl = URL.createObjectURL(blob);
+    link.href = downloadUrl;
+    document.body.appendChild(link);
     link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(downloadUrl), 30000);
+  } catch (error) {
+    window.alert(`Export JPEG gagal: ${error.message}`);
   } finally {
-    document.body.classList.remove("is-exporting");
     button.disabled = false;
     button.textContent = originalText;
   }
